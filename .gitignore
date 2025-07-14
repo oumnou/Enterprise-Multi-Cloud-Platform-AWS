@@ -1,0 +1,13 @@
+# Terraform files to ignore
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+crash.log
+
+# AWS credentials (never push them)
+*.pem
+*.csv
+*.key
+.env
+.exe
