@@ -86,12 +86,17 @@ resource "aws_instance" "ec2_public" {
   key_name                    = "oumaima-key"
 
   tags = {
-    Name = "public-ec2-1"
-  }
+  Name        = "public-ec2-1"
+  Owner       = "oumaima"
+  Environment = "development"
+  Role        = "admin-dashboard"
+  Project     = "MultiCloudPlatform"
+}
+
 
 
  provisioner "file" {
-    source      = "${path.module}/dashboard/index.html"
+    source      = "${path.module}/apps/admins/index.html"
     destination = "/home/ec2-user/index.html"
 
     connection {
@@ -135,9 +140,126 @@ resource "aws_instance" "ec2_private" {
   key_name      = "oumaima-key"
 
   tags = {
-    Name = "private-ec2-1"
+    Name        = "private-ec2-1"
+    Owner       = "oumaima"
+    Environment = "development"
+    Role        = "backend"
+    Project     = "MultiCloudPlatform"
+  }
+
+  # Deploy Developer app to private EC2
+  provisioner "file" {
+    source      = "${path.module}/apps/developers/"
+    destination = "/home/ec2-user/developers/"
+
+    connection {
+      type               = "ssh"
+      user               = "ec2-user"
+      private_key        = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")
+      host               = self.private_ip
+
+      bastion_host       = aws_instance.ec2_public.public_ip
+      bastion_user       = "ec2-user"
+      bastion_private_key = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")
+    }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mkdir -p /var/www/html/developers",
+      "sudo cp -r /home/ec2-user/developers/* /var/www/html/developers/",
+      "sudo chown -R apache:apache /var/www/html/developers",
+      "sudo systemctl restart httpd"
+    ]
+
+    connection {
+      type               = "ssh"
+      user               = "ec2-user"
+      private_key        = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")
+      host               = self.private_ip
+
+      bastion_host       = aws_instance.ec2_public.public_ip
+      bastion_user       = "ec2-user"
+      bastion_private_key = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")
+    }
+  }
+
+  # Deploy Analyst app to private EC2
+  provisioner "file" {
+    source      = "${path.module}/apps/analysts/"
+    destination = "/home/ec2-user/analysts/"
+
+    connection {
+      type               = "ssh"
+      user               = "ec2-user"
+      private_key        = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")
+      host               = self.private_ip
+
+      bastion_host       = aws_instance.ec2_public.public_ip
+      bastion_user       = "ec2-user"
+      bastion_private_key = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")
+    }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mkdir -p /var/www/html/analysts",
+      "sudo cp -r /home/ec2-user/analysts/* /var/www/html/analysts/",
+      "sudo chown -R apache:apache /var/www/html/analysts",
+      "sudo systemctl restart httpd"
+    ]
+
+    connection {
+      type               = "ssh"
+      user               = "ec2-user"
+      private_key        = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")
+      host               = self.private_ip
+
+      bastion_host       = aws_instance.ec2_public.public_ip
+      bastion_user       = "ec2-user"
+      bastion_private_key = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")
+    }
+  }
+
+  # Deploy Intern app to private EC2
+  provisioner "file" {
+    source      = "${path.module}/apps/interns/"
+    destination = "/home/ec2-user/interns/"
+
+    connection {
+      type               = "ssh"
+      user               = "ec2-user"
+      private_key        = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")
+      host               = self.private_ip
+
+      bastion_host       = aws_instance.ec2_public.public_ip
+      bastion_user       = "ec2-user"
+      bastion_private_key = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")
+    }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mkdir -p /var/www/html/interns",
+      "sudo cp -r /home/ec2-user/interns/* /var/www/html/interns/",
+      "sudo chown -R apache:apache /var/www/html/interns",
+      "sudo systemctl restart httpd"
+    ]
+
+    connection {
+      type               = "ssh"
+      user               = "ec2-user"
+      private_key        = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")
+      host               = self.private_ip
+
+      bastion_host       = aws_instance.ec2_public.public_ip
+      bastion_user       = "ec2-user"
+      bastion_private_key = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")
+    }
   }
 }
+
+
 
 # -------------------------------
 # IAM Users
