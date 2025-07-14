@@ -71,6 +71,10 @@ resource "aws_route_table_association" "public_subnet" {
   route_table_id = aws_route_table.public.id
 }
 
+
+
+
+
 # -------------------------------
 # EC2 Public Instance
 # -------------------------------
@@ -84,7 +88,42 @@ resource "aws_instance" "ec2_public" {
   tags = {
     Name = "public-ec2-1"
   }
+
+
+ provisioner "file" {
+    source      = "${path.module}/dashboard/index.html"
+    destination = "/home/ec2-user/index.html"
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")  # 
+      host        = self.public_ip
+    }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mv /home/ec2-user/index.html /var/www/html/index.html",
+      "sudo systemctl restart httpd"  # If you use Apache; change if using nginx or something else
+    ]
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")  # Same PEM file path here
+      host        = self.public_ip
+    }
+  }
+
 }
+
+
+
+
+
+
+
 
 # -------------------------------
 # EC2 Private Instance
@@ -250,7 +289,7 @@ output "laila_secret_access_key" {
 # S3 Bucket for CloudTrail Logs (with encryption and versioning)
 # -------------------------------
 resource "aws_s3_bucket" "cloudtrail_logs" {
-  bucket = "oumaima-multicloud-cloudtrail-logs"  # Change to your unique bucket name
+  bucket = "oumaima-multicloud-cloudtrail-logs" 
 
   versioning {
     enabled = true
@@ -380,7 +419,7 @@ resource "aws_security_group" "allow_ssh_http" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["105.71.19.44/32"]  # Replace with your actual IP address
+    cidr_blocks = ["105.71.19.44/32"] 
   }
 
   ingress {

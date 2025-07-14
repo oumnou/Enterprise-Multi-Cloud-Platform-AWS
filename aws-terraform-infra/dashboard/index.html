@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard - Multi-Cloud Security</title>
+  <style>
+    /* Reset & base */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+    h1, h2, h3 {
+      margin: 0 0 0.5rem 0;
+    }
+    p {
+      margin: 0 0 1rem 0;
+    }
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 1.5rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      color: #1e3a8a;
+      letter-spacing: 1.5px;
+    }
+    header p {
+      font-size: 1.1rem;
+      color: #555;
+      font-style: italic;
+    }
+    /* Grid layout */
+    .grid {
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    /* Card style */
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .card h2 {
+      color: #1e40af;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #1e40af;
+      padding-bottom: 0.5rem;
+    }
+    /* Team Members */
+    .team-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .team-member {
+      background: #e0e7ff;
+      border-radius: 8px;
+      flex: 1 1 120px;
+      display: flex;
+      align-items: center;
+      padding: 0.7rem 1rem;
+      gap: 1rem;
+      box-shadow: inset 0 0 5px #c7d2fe;
+      cursor: default;
+      transition: background-color 0.3s;
+    }
+    .team-member:hover {
+      background: #c7d2fe;
+    }
+    .avatar {
+      background: #1e40af;
+      color: white;
+      font-weight: 700;
+      font-size: 1.25rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      box-shadow: 0 2px 5px rgba(30,64,175,0.6);
+    }
+    .member-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .member-name {
+      font-weight: 600;
+    }
+    .member-role {
+      font-size: 0.9rem;
+      color: #374151;
+    }
+    /* EC2 Instances Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #1e40af;
+      color: white;
+      font-weight: 600;
+    }
+    tbody tr:hover {
+      background-color: #e0e7ff;
+    }
+    .status-running {
+      color: #16a34a;
+      font-weight: 700;
+    }
+    /* Project Summary */
+    ul {
+      padding-left: 1.2rem;
+      color: #374151;
+    }
+    ul li {
+      margin-bottom: 0.6rem;
+    }
+    /* Future Features */
+    .future-feature {
+      background: #fef3c7;
+      border-left: 5px solid #f59e0b;
+      padding: 1rem 1rem 1rem 1.2rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: #92400e;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .coming-soon {
+      background-color: #fbbf24;
+      color: white;
+      padding: 0.15rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    /* Responsive */
+    @media (max-width: 600px) {
+      .team-list {
+        flex-direction: column;
+      }
+      .team-member {
+        flex: 1 1 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Admin Dashboard</h1>
+    <p>Enterprise Multi-Cloud Security Platform</p>
+  </header>
+
+  <div class="container">
+
+    <!-- Team Members -->
+    <section class="card">
+      <h2>Team Members</h2>
+      <ul class="team-list">
+        <li class="team-member">
+          <div class="avatar">O</div>
+          <div class="member-info">
+            <div class="member-name">Oumaima Nouini</div>
+            <div class="member-role">Admin</div>
+          </div>
+        </li>
+        <li class="team-member">
+          <div class="avatar">M</div>
+          <div class="member-info">
+            <div class="member-name">Marouane</div>
+            <div class="member-role">Developer</div>
+          </div>
+        </li>
+        <li class="team-member">
+          <div class="avatar">S</div>
+          <div class="member-info">
+            <div class="member-name">Sara</div>
+            <div class="member-role">Analyst</div>
+          </div>
+        </li>
+        <li class="team-member">
+          <div class="avatar">L</div>
+          <div class="member-info">
+            <div class="member-name">Laila</div>
+            <div class="member-role">Intern</div>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- EC2 Instances Overview -->
+    <section class="card">
+      <h2>EC2 Instances Overview</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Instance Type</th>
+            <th>Subnet</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>public-ec2-1</td>
+            <td>t2.micro</td>
+            <td>Public Subnet</td>
+            <td class="status-running">Running</td>
+          </tr>
+          <tr>
+            <td>private-ec2-1</td>
+            <td>t2.micro</td>
+            <td>Private Subnet</td>
+            <td class="status-running">Running</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Project Summary -->
+    <section class="card">
+      <h2>Project Summary</h2>
+      <ul>
+        <li>Created a VPC with public and private subnets</li>
+        <li>Deployed EC2 instances in respective subnets</li>
+        <li>Configured IAM users, groups, and policies for role-based access</li>
+        <li>Set up AWS CloudTrail for logging and centralized S3 bucket</li>
+        <li>Implemented AWS Config for compliance monitoring</li>
+      </ul>
+    </section>
+
+    <!-- Future Features -->
+    <section class="card">
+      <h2>Future Features</h2>
+      <div class="future-feature">
+        <span>Real-time Logs & Alerts</span>
+        <span class="coming-soon">Coming Soon</span>
+      </div>
+      <div class="future-feature">
+        <span>Automated Security Compliance Reports</span>
+        <span class="coming-soon">Coming Soon</span>
+      </div>
+      <div class="future-feature">
+        <span>Multi-Cloud Integration Dashboard</span>
+        <span class="coming-soon">Coming Soon</span>
+      </div>
+      <div class="future-feature">
+        <span>User Activity Analytics</span>
+        <span class="coming-soon">Coming Soon</span>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>
