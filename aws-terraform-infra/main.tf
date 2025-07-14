@@ -245,3 +245,160 @@ output "laila_secret_access_key" {
   value     = aws_iam_access_key.laila_key.secret
   sensitive = true
 }
+
+# -------------------------------
+# S3 Bucket for CloudTrail Logs (with encryption and versioning)
+# -------------------------------
+resource "aws_s3_bucket" "cloudtrail_logs" {
+  bucket = "oumaima-multicloud-cloudtrail-logs"  # Change to your unique bucket name
+
+  versioning {
+    enabled = true
+  }
+}
+
+# -------------------------------
+# S3 Bucket Policy for CloudTrail (Allow CloudTrail to write logs)
+# -------------------------------
+resource "aws_s3_bucket_policy" "cloudtrail_policy" {
+  bucket = aws_s3_bucket.cloudtrail_logs.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "AWSCloudTrailWrite"
+        Effect    = "Allow"
+        Principal = {
+          Service = "cloudtrail.amazonaws.com"
+        }
+        Action   = "s3:GetBucketAcl"
+        Resource = "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs.bucket}"
+      },
+      {
+        Sid       = "AWSCloudTrailWrite2"
+        Effect    = "Allow"
+        Principal = {
+          Service = "cloudtrail.amazonaws.com"
+        }
+        Action   = "s3:PutObject"
+        Resource = "arn:aws:s3:::${aws_s3_bucket.cloudtrail_logs.bucket}/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
+        Condition = {
+          StringEquals = {
+            "s3:x-amz-acl" = "bucket-owner-full-control"
+          }
+        }
+      }
+    ]
+  })
+}
+
+data "aws_caller_identity" "current" {}
+
+# -------------------------------
+# CloudTrail Trail
+# -------------------------------
+resource "aws_cloudtrail" "network_audit_trail" {
+  name                          = "network-audit-trail"
+  s3_bucket_name                = aws_s3_bucket.cloudtrail_logs.bucket
+  include_global_service_events = true
+  is_multi_region_trail         = true
+  enable_log_file_validation    = true
+
+  depends_on = [aws_s3_bucket_policy.cloudtrail_policy]
+}
+
+# -------------------------------
+# IAM Role for AWS Config
+# -------------------------------
+resource "aws_iam_role" "config_role" {
+  name = "config-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Service = "config.amazonaws.com"
+      },
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "config_policy_attachment" {
+  role       = aws_iam_role.config_role.name
+  # Fixed correct AWS Config managed policy ARN
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSConfigRoleForOrganizations"
+}
+
+# -------------------------------
+# AWS Config Recorder & Delivery Channel
+# -------------------------------
+resource "aws_config_configuration_recorder" "main" {
+  name     = "main"
+  role_arn = aws_iam_role.config_role.arn
+
+  recording_group {
+    all_supported = true
+  }
+}
+
+resource "aws_config_delivery_channel" "main" {
+  name           = "main"
+  s3_bucket_name = aws_s3_bucket.cloudtrail_logs.bucket
+
+  depends_on = [aws_config_configuration_recorder.main]
+}
+
+# -------------------------------
+# AWS Config Rule example: required tags
+# -------------------------------
+resource "aws_config_config_rule" "required_tags" {
+  name = "required-tags"
+
+  source {
+    owner             = "AWS"
+    source_identifier = "REQUIRED_TAGS"
+  }
+
+  input_parameters = jsonencode({
+    tag1Key = "Name"
+  })
+}
+
+# -------------------------------
+# Security Group with restricted SSH & open HTTP
+# -------------------------------
+resource "aws_security_group" "allow_ssh_http" {
+  name        = "allow_ssh_http"
+  description = "Allow SSH from my IP and HTTP from anywhere"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description = "SSH from my IP"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["105.71.19.44/32"]  # Replace with your actual IP address
+  }
+
+  ingress {
+    description = "HTTP from anywhere"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "allow_ssh_http"
+  }
+}
