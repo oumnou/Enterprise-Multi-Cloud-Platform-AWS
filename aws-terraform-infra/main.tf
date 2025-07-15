@@ -110,13 +110,13 @@ resource "aws_instance" "ec2_public" {
   provisioner "remote-exec" {
     inline = [
       "sudo mv /home/ec2-user/index.html /var/www/html/index.html",
-      "sudo systemctl restart httpd"  # If you use Apache; change if using nginx or something else
+      "sudo systemctl restart httpd"  
     ]
 
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")  # Same PEM file path here
+      private_key = file("D:/Enterprise-Multi-Cloud-Platform-AWS/key.pem")  
       host        = self.public_ip
     }
   }
