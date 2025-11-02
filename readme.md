@@ -14,8 +14,6 @@ This Terraform project deploys a **robust AWS infrastructure** designed for a mu
 
 ## 🏗 Architecture Diagram
 
-*(You can create a diagram using tools like [Diagrams.net](https://app.diagrams.net/) or [Lucidchart](https://www.lucidchart.com/). Example components:)*
-
 - VPC with public & private subnets across multiple Availability Zones (eu-west-3a, eu-west-3b)
 - Internet Gateway for outbound traffic
 - Public EC2 (bastion + admin dashboard)
