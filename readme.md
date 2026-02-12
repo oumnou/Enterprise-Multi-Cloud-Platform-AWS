@@ -59,7 +59,7 @@ This Terraform project deploys a **robust AWS infrastructure** designed for a mu
   | Group       | Users              | Managed Policies                         | Purpose                    |
   |-------------|--------------------|----------------------------------------|----------------------------|
   | Admins      | oumaima.admin      | AdministratorAccess                    | Full AWS control           |
-  | Developers  | marouane.dev       | AmazonEC2FullAccess                    | EC2 management             |
+  | Developers  | ayman.dev       | AmazonEC2FullAccess                    | EC2 management             |
   | Analysts    | sara.analyst       | SecurityAudit                         | Security auditing          |
   | Interns     | laila.intern       | ReadOnlyAccess                        | Read-only permissions      |
 
